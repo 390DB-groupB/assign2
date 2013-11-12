@@ -21,6 +21,27 @@
 -- What to submit: You need to turn in 2 files for part A. First, create a file ER.pdf (jpg and png are also acceptable), with the drawing of your Entity-Relationship diagram. Make sure that you depict all attributes, entities, relationships, and the necessary constraints. Second, create a file called setup.sql with CREATE TABLE statements and INSERT statements that populate each of your tables with a few tuples. Make sure that you use the appropriate types, and specify all key constraints. Your SQL table definitions should match the specifications in your ER diagram.
 
 -- TABLES --
+-- LivesIn/Location
+create table Location(lid int primary key,
+					city varchar(50),
+					state varchar(50)
+					);
+-- example: count the number of customers who live in each location
+-- select count(cid), city, state from location l, customer c where c.lid = l.lid group by l.lid
+
+-- Movie(movie_id int primary key)
+-- just a list of all the movies 
+create table Movie(mid int primary key);
+
+create table Plan(pid int primary key,
+				-- subscriber_id int references Customer(cid), -- who is subscribing to this plan?
+				plan_name varchar(20), -- "Gold", "Basic", etc.
+				max_rentals int,
+				fee int
+				);
+-- example: find usernames of customers who subscribe to the 'Gold' plan
+-- select c.username from customer c, plan p where c.plan_id = p.pid and p.name = 'Gold'
+
 -- Customer(cid, username, password, phone number, location id, plan id)
 create table Customer(cid int primary key, 
 					username varchar(20) unique,
@@ -32,31 +53,12 @@ create table Customer(cid int primary key,
 -- example: select customers who live in the same location as another customer
 -- select * from customer c1, customer c2 where c1.lid = c2.lid
 
--- LivesIn/Location
-create table Location(lid int primary key,
-					city varchar(50),
-					state varchar(50)
-					);
--- example: count the number of customers who live in each location
--- select count(cid), city, state from location l, customer c where c.lid = l.lid group by l.lid
 
-create table Plan(pid int primary key,
-				-- subscriber_id int references Customer(cid), -- who is subscribing to this plan?
-				plan_name varchar(20), -- "Gold", "Basic", etc.
-				max_rentals int,
-				fee int
-				);
--- example: find usernames of customers who subscribe to the 'Gold' plan
--- select c.username from customer c, plan p where c.plan_id = p.pid and p.name = 'Gold'
-
--- Movie(movie_id int primary key)
--- just a list of all the movies 
-create table Movie(mid int primary key);
 
 -- ActiveRentals(mid, cid, dateRented)
 -- if a customer wants to rent a movie and the movie's mid is in ActiveRental,
 -- then we know someone else is already renting that movie
-create table ActiveRental(mid int references Movie(mid),
+create table ActiveRental(mid int references Movie,
 						cid int references Customer(cid),
 						dateRented date,
 						primary key(cid, mid)
@@ -66,48 +68,7 @@ create table ActiveRental(mid int references Movie(mid),
 -- keeps track of all past rentals by all customers (for stats, e.g.). A tuple corresponding
 -- to the (movie, customer id) is moved from ActiveRentals to RentalHistory when the 
 -- customer returns the movie.
-create table RentalHistory(mid int references Movie(mid),
+create table RentalHistory(mid int references Movie,
 						cid int references Customer(cid),
 						primary key(cid, mid)
 						);
-
-
--- INSERT STATEMENTS
-insert into Location values(1, "Amherst", "Massachusetts");
-insert into Location values(2, "Boston", "Massachusetts");
-insert into Location values(3, "Portland", "Maine");
-insert into Location values(4, "Hartford", "Connecticut");
-insert into Location values(5, "Chicago", "Illinois");
-insert into Location values(6, "New York", "New York");
-
-insert into Movie values(1);
-insert into Movie values(2);
-insert into Movie values(3);
-insert into Movie values(4);
-insert into Movie values(5);
-insert into Movie values(6);
-
---I ignored the "subscriber_id" attribute in the setup.sql create table statements
-insert into Plan values(1, "Starter", 1, 5);
-insert into Plan values(2, "Basic", 3, 8);
-insert into Plan values(3, "Recommended", 6, 12);
-insert into Plan values(4, "Premium", 12, 20);
-insert into Plan values(5, "Platinum", 25, 35);
-
-insert into Customer values(1, "test123", "password", "1234567890", 2, 3);
-insert into Customer values(2, "customer", "abc123", "8005559999", 6, 2);
-insert into Customer values(3, "JohnSmith", "mynameisjohnsmith", "1112223333", 1, 1);
-insert into Customer values(4, "movierenter554", "!GU#$16G8JL", "4561237777", 3, 5);
-insert into Customer values(5, "username", "asdfasdfasdf", "6548762233", 5, 4);
-
-insert into ActiveRental values(1, 4, "2013-10-13");
-insert into ActiveRental values(4, 2, "2012-12-12");
-insert into ActiveRental values(2, 5, "2009-04-05");
-insert into ActiveRental values(6, 1, "2011-10-31");
-insert into ActiveRental values(5, 3, "2013-01-01");
-
-insert into RentalHistory values(1, 4);
-insert into RentalHistory values(4, 2);
-insert into RentalHistory values(2, 5);
-insert into RentalHistory values(6, 1);
-insert into RentalHistory values(5, 3);
