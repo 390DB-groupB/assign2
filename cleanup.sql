@@ -1,4 +1,4 @@
-drop table customer cascade;
+drop table customers cascade;
 drop table location cascade;
 drop table plan cascade;
 drop table movie cascade;

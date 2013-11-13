@@ -39,27 +39,28 @@ create table Plan(pid int primary key,
 				max_rentals int,
 				fee int
 				);
--- example: find usernames of customers who subscribe to the 'Gold' plan
--- select c.username from customer c, plan p where c.plan_id = p.pid and p.name = 'Gold'
+-- -- example: find usernames of customers who subscribe to the 'Gold' plan
+-- -- select c.username from customer c, plan p where c.plan_id = p.pid and p.name = 'Gold'
 
 -- Customer(cid, username, password, phone number, location id, plan id)
-create table Customer(cid int primary key, 
-					username varchar(20) unique,
+create table Customers(cid int primary key, 
+					login varchar(20) unique,
 					password varchar(50), -- need to specify not null?
 					phone_number char(10), -- contact info
 					lid int references Location(lid), -- maybe "foreign key(city, state) references Location(city, state)" instead?
-					plan_id int references Plan(pid) -- which plan does this customer subscribe to?
+					plan_id int references Plan(pid), -- which plan does this customer subscribe to?
+					firstname varchar(50),
+					lastname varchar(50)
 					);
 -- example: select customers who live in the same location as another customer
 -- select * from customer c1, customer c2 where c1.lid = c2.lid
-
 
 
 -- ActiveRentals(mid, cid, dateRented)
 -- if a customer wants to rent a movie and the movie's mid is in ActiveRental,
 -- then we know someone else is already renting that movie
 create table ActiveRental(mid int references Movie,
-						cid int references Customer(cid),
+						cid int references Customers(cid),
 						dateRented date,
 						primary key(cid, mid)
 						);
@@ -69,6 +70,6 @@ create table ActiveRental(mid int references Movie,
 -- to the (movie, customer id) is moved from ActiveRentals to RentalHistory when the 
 -- customer returns the movie.
 create table RentalHistory(mid int references Movie,
-						cid int references Customer(cid),
+						cid int references Customers(cid),
 						primary key(cid, mid)
 						);

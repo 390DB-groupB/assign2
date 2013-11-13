@@ -1,10 +1,18 @@
+insert into location values(0, 'amherst', 'MA');
+insert into movie values(0);
+insert into plan values(0, 'gold', 10, 5);
+insert into customers values(0, 'd', '123', '5551212', 0, 0, 'kate', 's.');
+insert into ActiveRental values(0, 0, '11-12-13');
+insert into RentalHistory values(0, 0);
+
 -- INSERT STATEMENTS
-\copy location from 'data/locations.txt' with delimiter ',' null as ''
-\copy movie from 'data/movies.txt' with delimiter ',' null as ''
-\copy plan from 'data/plans.txt' with delimiter ',' null as ''
-\copy ActiveRental from 'data/active_rentals.txt' with delimiter ',' null as ''
-\copy RentalHistory from 'data/rental_history.txt' with delimiter ',' null as ''
-\copy customer from 'data/customers.txt' with delimiter ',' null as ''
+-- insert into customers values(0, 'd', '123', '5552121', 1, 0);
+-- \copy location from 'data/locations.txt' with delimiter ',' null as ''
+-- \copy movie from 'data/movies.txt' with delimiter ',' null as ''
+-- \copy plan from 'data/plans.txt' with delimiter ',' null as ''
+-- \copy ActiveRental from 'data/active_rentals.txt' with delimiter ',' null as ''
+-- \copy RentalHistory from 'data/rental_history.txt' with delimiter ',' null as ''
+-- \copy customer from 'data/customers.txt' with delimiter ',' null as ''
 
 -- insert into Location values(1, "Amherst", "Massachusetts");
 -- insert into Location values(2, "Boston", "Massachusetts");
