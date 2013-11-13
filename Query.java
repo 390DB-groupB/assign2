@@ -440,10 +440,12 @@ public class Query {
         _user_rentals.setInt(1, cid);
         ResultSet rs = _user_rentals.executeQuery();
         int i = 0;
-        while(rs.next())
-        {
-            System.out.println(rs.getString(1));
-        }
+        if (rs.next()){
+            while(rs.next())
+            {
+                System.out.println(rs.getString(1));
+            }
+        } else { System.out.println("No movies."); }
     }
     //Done
     public void transaction_rent(int cid, int mid) throws Exception {
