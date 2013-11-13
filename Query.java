@@ -200,6 +200,10 @@ public class Query {
             maxrentals = -1;
         if (maxrentals > 0 && result > 0)
             return(maxrentals - result);
+        else {
+            if (result == 0)
+                return maxrentals;
+        }
         return 0;
     }
     
