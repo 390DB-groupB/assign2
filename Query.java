@@ -86,6 +86,15 @@ public class Query {
     private String _insert_activerental = "insert into ActiveRental values(?,?, CURRENT_TIMESTAMP)";
     private PreparedStatement _insert_activerental_statement;
 
+    private String _delete_activerental = "delete from ActiveRental where mid = ? and cid = ?";
+    private PreparedStatement _delete_activerental_statement;
+
+    private String _update_history = "insert into RentalHistory values(?, ?)";
+    private PreparedStatement _update_history_statement;
+
+    private String _check_history = "select mid from RentalHistory where cid = ? and mid = ?";
+    private PreparedStatement _check_history_statement;
+
     private String _get_plan = "select plan_id from customers where cid = ?";
     private PreparedStatement _get_plan_statement;
 
@@ -153,6 +162,9 @@ public class Query {
          _cname = _customer_db.prepareStatement(_customer_name);
          _user_rentals = _customer_db.prepareStatement(_ur);
          _get_plan_statement = _customer_db.prepareStatement(_get_plan);
+         _delete_activerental_statement = _customer_db.prepareStatement(_delete_activerental);
+         _update_history_statement = _customer_db.prepareStatement(_update_history);
+         _check_history_statement = _customer_db.prepareStatement(_check_history);
          
         
         /* add here more prepare statements for all the other queries you need */
@@ -451,6 +463,33 @@ public class Query {
     
     public void transaction_return(int cid, int mid) throws Exception {
         /* return the movie mid by the customer cid */
+        _delete_activerental_statement.clearParameters();
+        _delete_activerental_statement.setInt(1, mid);
+        _delete_activerental_statement.setInt(2, cid);
+
+        _check_history_statement.clearParameters();
+        _check_history_statement.setInt(1, cid);
+        _check_history_statement.setInt(2, mid);
+
+        _update_history_statement.clearParameters();
+        _update_history_statement.setInt(1, mid);
+        _update_history_statement.setInt(2, cid);
+
+        if(helper_check_movie(mid))
+        {
+            if(helper_check_activeRentals(mid) == true)
+            {
+                System.out.print("Returning [ "+mid+" ] ");
+
+                _delete_activerental_statement.execute();
+                ResultSet hist = _check_history_statement.executeQuery();
+                if (!hist.next())
+                {
+                    _update_history_statement.execute();
+                }
+                System.out.println("Thanks!");
+            } else { System.out. println("You aren't even renting that"); }
+        } else { System.out.println ("Enter a valid movie ID"); }  
     }
     
     public void transaction_fast_search(int cid, String movie_title)
